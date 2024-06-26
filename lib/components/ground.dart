@@ -1,0 +1,42 @@
+import 'dart:async';
+import 'dart:ui';
+import 'package:copter_game/game/assets.dart';
+import 'package:copter_game/game/configuration.dart';
+import 'package:copter_game/game/copter_game.dart';
+import 'package:flame/collisions.dart';
+import 'package:flame/components.dart';
+import 'package:flame/extensions.dart';
+import 'package:flame/flame.dart';
+import 'package:flame/parallax.dart';
+
+class Ground extends ParallaxComponent<CopterGame> with HasGameRef<CopterGame>{
+  Ground();
+
+  @override
+  FutureOr<void> onLoad() async {
+    final ground = await Flame.images.load(Assets.ground);
+    parallax = Parallax([
+      ParallaxLayer(
+        ParallaxImage(ground, fill: LayerFill.none)
+      )
+    ]
+    );
+
+    add(
+      RectangleHitbox(
+        position: Vector2(0, gameRef.size.y - Config.groundHeight),
+        size: Vector2(gameRef.size.x, Config.groundHeight),
+      )
+    );
+  }
+
+  @override
+  // TODO: implement image
+  Image get image => throw UnimplementedError();
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    parallax?.baseVelocity.x = Config.gameSpeed;
+  }
+}
